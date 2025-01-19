@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  directus:
+    image: directus/directus:latest
+    ports:
+      - "8055:8055"
+    environment:
+      DATABASE_CLIENT: mongodb
+      DATABASE_HOST: mongodb
+      DATABASE_PORT: 27017
+      DATABASE_NAME: blogdb
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: admin123
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  fastapi:
+    build: ./fastapi
+    ports:
+      - "8000:8000"
+
+volumes:
+  mongo-data:
