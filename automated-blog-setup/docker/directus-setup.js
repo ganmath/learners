@@ -1,8 +1,8 @@
 const axios = require('axios');
 
-const API_URL = "http://localhost:8055"; // Directus API URL (update if needed)
-const ADMIN_EMAIL = "admin@example.com"; // Admin email from docker-compose.yml
-const ADMIN_PASSWORD = "admin123";       // Admin password from docker-compose.yml
+const API_URL = "http://localhost:8055";
+const ADMIN_EMAIL = "admin@example.com";
+const ADMIN_PASSWORD = "admin123";
 
 async function setupDirectus() {
   try {
@@ -36,32 +36,42 @@ async function setupDirectus() {
         field: "title",
         type: "string",
         schema: {
-          name: "Title",
-          required: true,
+          name: "title",
+          table: "blog_posts",
+          data_type: "varchar",
+          max_length: 255,
+          is_nullable: false,
         },
       },
       {
         field: "content",
         type: "text",
         schema: {
-          name: "Content",
-          required: true,
+          name: "content",
+          table: "blog_posts",
+          data_type: "text",
+          is_nullable: false,
         },
       },
       {
         field: "published",
         type: "boolean",
         schema: {
-          name: "Published",
-          required: false,
+          name: "published",
+          table: "blog_posts",
+          data_type: "boolean",
+          is_nullable: true,
         },
       },
       {
         field: "created_at",
-        type: "datetime",
+        type: "dateTime", // Corrected type
         schema: {
-          name: "Created At",
-          required: true,
+          name: "created_at",
+          table: "blog_posts",
+          data_type: "datetime",
+          is_nullable: false,
+          default_value: "CURRENT_TIMESTAMP",
         },
       },
     ];
