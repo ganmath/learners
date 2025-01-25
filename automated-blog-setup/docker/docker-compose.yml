@@ -3,7 +3,7 @@ services:
   directus:
     image: directus/directus:latest
     ports:
-      - "8055:8055"
+      - "8055:8055" # Directus admin panel
     environment:
       DATABASE_CLIENT: mongodb
       DATABASE_HOST: mongodb
@@ -14,18 +14,23 @@ services:
     depends_on:
       - mongodb
       - fastapi
+    volumes:
+      - ./directus-data:/data # Optional: Persist Directus data
 
-mongodb:
-  image: bitnami/mongodb:latest
-  ports:
-    - "27017:27017"
-  volumes:
-    - mongo-data:/data/db
+  mongodb:
+    image: bitnami/mongodb:latest
+    ports:
+      - "27017:27017" # MongoDB port
+    environment:
+      MONGODB_DATABASE: blogdb
+      MONGODB_ROOT_USER: root
+      MONGODB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - ./mongo-data:/bitnami/mongodb # Optional: Persist MongoDB data
 
   fastapi:
     build: ./fastapi
     ports:
-      - "8000:8000"
-
-volumes:
-  mongo-data:
+      - "8000:8000" # FastAPI port
+    volumes:
+      - ./fastapi:/app
