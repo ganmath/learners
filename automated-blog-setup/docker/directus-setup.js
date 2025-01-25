@@ -14,23 +14,33 @@ async function setupDirectus() {
     const accessToken = loginResponse.data.data.access_token;
     console.log("Logged in successfully. Access Token:", accessToken);
 
-    // Step 2: Create a new collection called "blog_posts"
-    const collectionResponse = await axios.post(
-      `${API_URL}/collections`,
-      {
-        collection: "blog_posts",
-        schema: {
-          name: "Blog Posts",
-          hidden: false,
-        },
-      },
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
-    );
-    console.log("Collection 'blog_posts' created:", collectionResponse.data.data);
+    // Step 2: Check if "blog_posts" collection already exists
+    const collectionsResponse = await axios.get(`${API_URL}/collections`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
 
-    // Step 3: Add fields to the "blog_posts" collection
+    const existingCollections = collectionsResponse.data.data.map((c) => c.collection);
+    if (existingCollections.includes("blog_posts")) {
+      console.log('Collection "blog_posts" already exists. Skipping creation.');
+    } else {
+      // Step 3: Create "blog_posts" collection if it doesn't exist
+      const collectionResponse = await axios.post(
+        `${API_URL}/collections`,
+        {
+          collection: "blog_posts",
+          schema: {
+            name: "Blog Posts",
+            hidden: false,
+          },
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      console.log("Collection 'blog_posts' created:", collectionResponse.data.data);
+    }
+
+    // Step 4: Add fields to the "blog_posts" collection
     const fields = [
       {
         field: "title",
@@ -77,14 +87,24 @@ async function setupDirectus() {
     ];
 
     for (const field of fields) {
-      const fieldResponse = await axios.post(
-        `${API_URL}/fields/blog_posts`,
-        field,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      console.log(`Field '${field.field}' created:`, fieldResponse.data.data);
+      // Check if the field already exists
+      const fieldResponse = await axios.get(`${API_URL}/fields/blog_posts`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const existingFields = fieldResponse.data.data.map((f) => f.field);
+
+      if (existingFields.includes(field.field)) {
+        console.log(`Field "${field.field}" already exists in collection "blog_posts". Skipping creation.`);
+      } else {
+        const createFieldResponse = await axios.post(
+          `${API_URL}/fields/blog_posts`,
+          field,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        console.log(`Field '${field.field}' created:`, createFieldResponse.data.data);
+      }
     }
 
     console.log("Directus setup completed successfully!");
