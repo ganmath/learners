@@ -17,16 +17,16 @@ services:
     volumes:
       - ./directus-data:/data # Optional: Persist Directus data
 
+
   mongodb:
-    image: bitnami/mongodb:latest
-    ports:
-      - "27017:27017" # MongoDB port
-    environment:
-      MONGODB_DATABASE: blogdb
-      MONGODB_ROOT_USER: root
-      MONGODB_ROOT_PASSWORD: rootpassword
-    volumes:
-      - ./mongo-data:/bitnami/mongodb # Optional: Persist MongoDB data
+  image: mongo:4.4
+  ports:
+    - "27017:27017"
+  environment:
+    MONGO_INITDB_ROOT_USERNAME: root
+    MONGO_INITDB_ROOT_PASSWORD: rootpassword
+  volumes:
+    - ./mongo-data:/data/db
 
   fastapi:
     build: ./fastapi
