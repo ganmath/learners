@@ -15,12 +15,12 @@ services:
       - mongodb
       - fastapi
 
-  mongodb:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
+mongodb:
+  image: bitnami/mongodb:latest
+  ports:
+    - "27017:27017"
+  volumes:
+    - mongo-data:/data/db
 
   fastapi:
     build: ./fastapi
