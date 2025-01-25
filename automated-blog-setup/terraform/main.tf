@@ -5,12 +5,11 @@ provider "aws" {
 data "aws_subnets" "selected_subnets" {
   filter {
     name   = "availability-zone"
-    values = ["us-east-1a"]  # Change to a valid AZ as needed (e.g., us-east-1b, etc.)
+    values = ["us-east-1a"]  # Change as needed
   }
-
   filter {
     name   = "default-for-az"
-    values = ["true"]  # Ensure it's a default public subnet for the AZ
+    values = ["true"]
   }
 }
 
@@ -58,7 +57,7 @@ resource "aws_security_group" "blog_sg" {
     description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"  # -1 allows all protocols
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -79,10 +78,9 @@ resource "aws_spot_instance_request" "directus_spot_instance" {
     volume_size = 30
   }
 
-  # Externalized user_data script
   user_data = file("${path.module}/user_data.sh")
 
   tags = {
-    Name = "Directus-Spot-Instance"
+    Name = "Directus-Blog-Instance"
   }
 }

@@ -13,6 +13,7 @@ services:
       ADMIN_PASSWORD: admin123
     depends_on:
       - mongodb
+      - fastapi
 
   mongodb:
     image: mongo:latest

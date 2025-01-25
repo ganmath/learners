@@ -4,13 +4,13 @@ variable "aws_region" {
 }
 
 variable "instance_type" {
-  description = "Instance type for the EC2 Spot instance"
+  description = "Instance type for the EC2 instance"
   default     = "t3.medium"
 }
 
 variable "spot_price" {
   description = "Maximum Spot instance price"
-  default     = "0.04"  # Adjust the price as needed
+  default     = "0.04"
 }
 
 variable "ssh_public_key" {
