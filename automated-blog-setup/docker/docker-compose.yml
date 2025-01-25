@@ -3,7 +3,7 @@ services:
   directus:
     image: directus/directus:latest
     ports:
-      - "8055:8055" # Directus admin panel
+      - "8055:8055"
     environment:
       DATABASE_CLIENT: mongodb
       DATABASE_HOST: mongodb
@@ -13,24 +13,22 @@ services:
       ADMIN_PASSWORD: admin123
     depends_on:
       - mongodb
-      - fastapi
-    volumes:
-      - ./directus-data:/data # Optional: Persist Directus data
-
 
   mongodb:
-  image: mongo:4.4
-  ports:
-    - "27017:27017"
-  environment:
-    MONGO_INITDB_ROOT_USERNAME: root
-    MONGO_INITDB_ROOT_PASSWORD: rootpassword
-  volumes:
-    - ./mongo-data:/data/db
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - ./mongo-data:/data/db
 
   fastapi:
-    build: ./fastapi
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000" # FastAPI port
+      - "8000:8000"
     volumes:
       - ./fastapi:/app
