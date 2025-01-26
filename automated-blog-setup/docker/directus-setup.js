@@ -25,20 +25,10 @@ const firstDoha = {
     const accessToken = authResponse.data.data.access_token;
     console.log("Logged in successfully!");
 
-    // Step 2: Fetch the Admin role ID dynamically (if not already known)
-    console.log("Fetching Admin role ID...");
-    const rolesResponse = await axios.get(`${directusUrl}/roles`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const adminRole = rolesResponse.data.data.find((role) => role.admin_access);
-    if (!adminRole) {
-      throw new Error("Admin role not found in Directus instance.");
-    }
-    const adminRoleId = adminRole.id;
-    console.log(`Admin role ID: ${adminRoleId}`);
-
-    // Step 3: Update permissions for Admin role
+    // Step 2: Update permissions for Admin role
     console.log("Updating permissions for Admin role...");
+    const adminRoleId = "650e2067-ad9d-4b83-aacb-6b3b2ca30ba1";
+    
     const permissionPayload = {
       role: adminRoleId,
       name: "Full Access for Admin", // Add a descriptive name for the permission entry
@@ -59,7 +49,7 @@ const firstDoha = {
     });
     console.log("Permissions updated successfully!");
 
-    // Step 4: Ensure 'verses' collection exists
+    // Step 3: Ensure 'verses' collection exists
     console.log("Creating 'verses' collection if not already present...");
     await axios.post(
       `${directusUrl}/collections`,
@@ -77,7 +67,7 @@ const firstDoha = {
     );
     console.log("'verses' collection created or already exists!");
 
-    // Step 5: Add the first Doha to the 'verses' collection
+    // Step 4: Add the first Doha to the 'verses' collection
     console.log("Adding the first Doha...");
     const response = await axios.post(
       `${directusUrl}/items/verses`,
