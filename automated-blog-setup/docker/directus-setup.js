@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const directusUrl = "http://3.83.24.10:8055"; // Replace with your Directus public IP or domain
+const directusUrl = "http://localhost:8055"; // Replace with your Directus public IP or domain
 const adminEmail = "admin@example.com";
 const adminPassword = "admin123";
 
