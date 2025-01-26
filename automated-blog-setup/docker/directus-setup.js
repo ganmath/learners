@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 
 const directusUrl = "http://localhost:8055"; // Replace with your Directus public IP or domain
 const adminEmail = "admin@example.com";
@@ -40,7 +40,7 @@ const firstDoha = {
         update: true,
         delete: true,
       },
-      policy: null, // Explicitly set the policy to null
+      policy: {}, // Use an empty object for policy
     };
 
     await axios.post(`${directusUrl}/permissions`, permissionPayload, {
