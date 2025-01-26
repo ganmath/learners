@@ -25,7 +25,32 @@ const firstDoha = {
     const accessToken = authResponse.data.data.access_token;
     console.log("Logged in successfully!");
 
-    // Step 2: Ensure 'verses' collection exists
+    // Step 2: Update permissions for Admin role
+    console.log("Updating permissions for Admin role...");
+    const adminRoleId = "c4c37559-327e-44ba-b12c-6d8e6400491a"; // Replace with your Admin role ID
+    const permissions = [
+      {
+        collection: "*", // Grant permissions for all collections
+        action: "*", // Allow all actions
+        permissions: {
+          create: true,
+          read: true,
+          update: true,
+          delete: true,
+        },
+      },
+    ];
+
+    for (const permission of permissions) {
+      await axios.post(
+        `${directusUrl}/permissions`,
+        permission,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+    }
+    console.log("Permissions updated successfully!");
+
+    // Step 3: Ensure 'verses' collection exists
     console.log("Creating 'verses' collection if not already present...");
     await axios.post(
       `${directusUrl}/collections`,
@@ -43,7 +68,7 @@ const firstDoha = {
     );
     console.log("'verses' collection created or already exists!");
 
-    // Step 3: Add the first Doha to the 'verses' collection
+    // Step 4: Add the first Doha to the 'verses' collection
     console.log("Adding the first Doha...");
     const response = await axios.post(
       `${directusUrl}/items/verses`,
