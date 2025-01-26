@@ -31,6 +31,7 @@ const firstDoha = {
 
     const permissionPayload = {
       role: adminRoleId,
+      name: "Full Access for Admin", // Add a descriptive name for the permission entry
       collection: "*", // Apply to all collections
       action: "*", // Allow all actions
       fields: "*", // Apply to all fields
