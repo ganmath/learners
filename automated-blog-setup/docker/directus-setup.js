@@ -28,26 +28,24 @@ const firstDoha = {
     // Step 2: Update permissions for Admin role
     console.log("Updating permissions for Admin role...");
     const adminRoleId = "c4c37559-327e-44ba-b12c-6d8e6400491a"; // Replace with your Admin role ID
-    const permissions = [
-      {
-        collection: "*", // Grant permissions for all collections
-        action: "*", // Allow all actions
-        permissions: {
-          create: true,
-          read: true,
-          update: true,
-          delete: true,
-        },
-      },
-    ];
 
-    for (const permission of permissions) {
-      await axios.post(
-        `${directusUrl}/permissions`,
-        permission,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-    }
+    const permissionPayload = {
+      role: adminRoleId,
+      collection: "*", // Apply to all collections
+      action: "*", // Allow all actions
+      fields: "*", // Apply to all fields
+      permissions: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
+      policy: null, // Explicitly set the policy to null
+    };
+
+    await axios.post(`${directusUrl}/permissions`, permissionPayload, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     console.log("Permissions updated successfully!");
 
     // Step 3: Ensure 'verses' collection exists
