@@ -27,8 +27,8 @@ const firstDoha = {
 
     // Step 2: Update permissions for Admin role
     console.log("Updating permissions for Admin role...");
-    const adminRoleId = "650e2067-ad9d-4b83-aacb-6b3b2ca30ba1";
-    
+    const adminRoleId = "df9ec2cf-61ca-4a90-a1de-2b33c0fabbd7";
+
     const permissionPayload = {
       role: adminRoleId,
       name: "Full Access for Admin", // Add a descriptive name for the permission entry
