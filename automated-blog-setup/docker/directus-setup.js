@@ -1,116 +1,59 @@
 const axios = require('axios');
 
-const API_URL = "http://localhost:8055";
-const ADMIN_EMAIL = "admin@example.com";
-const ADMIN_PASSWORD = "admin123";
+const directusUrl = "http://3.83.24.10/:8055"; // Replace with your Directus public IP or domain
+const adminEmail = "admin@example.com";
+const adminPassword = "admin123";
 
-async function setupDirectus() {
+// First Doha of Hanuman Chalisa
+const firstDoha = {
+  verse_number: 1,
+  verse_text: "श्रीगुरु चरन सरोज रज, निज मनु मुकुरु सुधारि।",
+  transliteration: "Sri Guru Charan Saroj Raj, Nij Manu Mukuru Sudhari.",
+  meaning: "I clean the mirror of my mind with the dust of Guru’s lotus feet.",
+  explanation:
+    "The first Doha of Hanuman Chalisa is an invocation to the Guru. It highlights the disciple’s humility and desire to purify their mind to receive knowledge and wisdom. The poet Tulsidas compares his mind to a mirror that reflects divine knowledge once cleaned of impurities.",
+};
+
+(async () => {
   try {
-    // Step 1: Log in to Directus and get the access token
-    const loginResponse = await axios.post(`${API_URL}/auth/login`, {
-      email: ADMIN_EMAIL,
-      password: ADMIN_PASSWORD,
+    console.log("Logging in to Directus...");
+    // Step 1: Authenticate with Directus and get an access token
+    const authResponse = await axios.post(`${directusUrl}/auth/login`, {
+      email: adminEmail,
+      password: adminPassword,
     });
-    const accessToken = loginResponse.data.data.access_token;
-    console.log("Logged in successfully. Access Token:", accessToken);
+    const accessToken = authResponse.data.data.access_token;
+    console.log("Logged in successfully!");
 
-    // Step 2: Check if "blog_posts" collection already exists
-    const collectionsResponse = await axios.get(`${API_URL}/collections`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-    const existingCollections = collectionsResponse.data.data.map((c) => c.collection);
-    if (existingCollections.includes("blog_posts")) {
-      console.log('Collection "blog_posts" already exists. Skipping creation.');
-    } else {
-      // Step 3: Create "blog_posts" collection if it doesn't exist
-      const collectionResponse = await axios.post(
-        `${API_URL}/collections`,
-        {
-          collection: "blog_posts",
-          schema: {
-            name: "Blog Posts",
-            hidden: false,
-          },
-        },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      console.log("Collection 'blog_posts' created:", collectionResponse.data.data);
-    }
-
-    // Step 4: Add fields to the "blog_posts" collection
-    const fields = [
+    // Step 2: Ensure 'verses' collection exists
+    console.log("Creating 'verses' collection if not already present...");
+    await axios.post(
+      `${directusUrl}/collections`,
       {
-        field: "title",
-        type: "string",
-        schema: {
-          name: "title",
-          table: "blog_posts",
-          data_type: "varchar",
-          max_length: 255,
-          is_nullable: false,
-        },
+        collection: "verses",
+        fields: [
+          { field: "verse_number", type: "integer", required: true },
+          { field: "verse_text", type: "text", required: true },
+          { field: "transliteration", type: "string", required: true },
+          { field: "meaning", type: "text", required: true },
+          { field: "explanation", type: "text", required: true },
+        ],
       },
-      {
-        field: "content",
-        type: "text",
-        schema: {
-          name: "content",
-          table: "blog_posts",
-          data_type: "text",
-          is_nullable: false,
-        },
-      },
-      {
-        field: "published",
-        type: "boolean",
-        schema: {
-          name: "published",
-          table: "blog_posts",
-          data_type: "boolean",
-          is_nullable: true,
-        },
-      },
-      {
-        field: "created_at",
-        type: "dateTime", // Corrected type
-        schema: {
-          name: "created_at",
-          table: "blog_posts",
-          data_type: "datetime",
-          is_nullable: false,
-          default_value: "CURRENT_TIMESTAMP",
-        },
-      },
-    ];
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    console.log("'verses' collection created or already exists!");
 
-    for (const field of fields) {
-      // Check if the field already exists
-      const fieldResponse = await axios.get(`${API_URL}/fields/blog_posts`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      const existingFields = fieldResponse.data.data.map((f) => f.field);
-
-      if (existingFields.includes(field.field)) {
-        console.log(`Field "${field.field}" already exists in collection "blog_posts". Skipping creation.`);
-      } else {
-        const createFieldResponse = await axios.post(
-          `${API_URL}/fields/blog_posts`,
-          field,
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        );
-        console.log(`Field '${field.field}' created:`, createFieldResponse.data.data);
-      }
-    }
+    // Step 3: Add the first Doha to the 'verses' collection
+    console.log("Adding the first Doha...");
+    const response = await axios.post(
+      `${directusUrl}/items/verses`,
+      firstDoha,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    console.log("First Doha added successfully:", response.data);
 
     console.log("Directus setup completed successfully!");
   } catch (error) {
     console.error("Error setting up Directus:", error.response?.data || error.message);
   }
-}
-
-setupDirectus();
+})();

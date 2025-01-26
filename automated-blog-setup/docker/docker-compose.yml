@@ -24,7 +24,7 @@ services:
     volumes:
       - ./mongo-data:/data/db
 
-  fastapi:
+  fastapi:  
     build:
       context: ./fastapi
       dockerfile: Dockerfile
