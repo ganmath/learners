@@ -41,7 +41,7 @@ const firstDoha = {
         update: true,
         delete: true,
       },
-      policy: {}, // Use an empty object for policy
+      policy: JSON.stringify({}), // Use an empty object for policy
     };
 
     await axios.post(`${directusUrl}/permissions`, permissionPayload, {
